@@ -20,12 +20,23 @@ import com.sales.notification.enums.OperationEnum;
  *
  */
 public class CacheHandler {
-	// private static Map<Long, Sale> timestampToSaleMap = new HashMap<>();
-	private static List<Sale> allSales = new ArrayList<>();
-	private static Map<String, Optional<Sale>> productTypeToSaleMap = new HashMap<>();
-	private static List<SalesAdjustmentNotification> salesAdjustmentNotifications = new ArrayList<>();
+	private List<Sale> allSales = new ArrayList<>();
+	private Map<String, Optional<Sale>> productTypeToSaleMap = new HashMap<>();
+	private List<SalesAdjustmentNotification> salesAdjustmentNotifications = new ArrayList<>();
+
+	private static CacheHandler cacheHandler;
 
 	private CacheHandler() {
+	}
+
+	public static CacheHandler getInstance() {
+		if(null == cacheHandler) {
+			synchronized (cacheHandler) {
+				cacheHandler = new CacheHandler();
+			}
+		}
+		
+		return cacheHandler;
 	}
 
 	/**
@@ -33,7 +44,7 @@ public class CacheHandler {
 	 * @param notification
 	 * 
 	 */
-	public static void updateCache(Notification notification) {
+	public void updateCache(Notification notification) {
 		if (notification instanceof SingleSaleNotification) {
 			SingleSaleNotification singleSale = (SingleSaleNotification) notification;
 			Sale sale = new Sale(singleSale.getProductType(), 1, singleSale.getUnitPrice());
@@ -64,21 +75,21 @@ public class CacheHandler {
 
 	}
 
-	public static List<Sale> getAllSales() {
+	public List<Sale> getAllSales() {
 		return allSales;
 	}
 
-	public static Map<String, Optional<Sale>> getProductSalesReport() {
+	public Map<String, Optional<Sale>> getProductSalesReport() {
 		productTypeToSaleMap = null;
-		productTypeToSaleMap = allSales.stream().collect(Collectors.groupingBy(Sale::getProductType, Collectors.reducing(CacheHandler::merge)));
+		productTypeToSaleMap = allSales.stream().collect(Collectors.groupingBy(Sale::getProductType, Collectors.reducing(this::merge)));
 		return productTypeToSaleMap;
 	}
 
-	public static List<SalesAdjustmentNotification> getSalesAdjustments() {
+	public List<SalesAdjustmentNotification> getSalesAdjustments() {
 		return salesAdjustmentNotifications;
 	}
 
-	public static Sale merge(Sale a, Sale b) {
+	public Sale merge(Sale a, Sale b) {
 		if (a.getProductType().equals(b.getProductType())) {
 			return new Sale(a.getProductType(), a.getQuantity() + b.getQuantity(), a.getTotalSalesValue() + b.getTotalSalesValue());
 		}
@@ -86,17 +97,17 @@ public class CacheHandler {
 		return null;
 	}
 
-	private static void addSale(Sale sale, float amount) {
+	private void addSale(Sale sale, float amount) {
 		sale.setTotalSalesValue(sale.getTotalSalesValue() + amount);
 	}
 
-	private static void subtractSale(Sale sale, float amount) {
+	private void subtractSale(Sale sale, float amount) {
 		if (0 < sale.getTotalSalesValue() - amount) {
 			sale.setTotalSalesValue(sale.getTotalSalesValue() - amount);
 		}
 	}
 
-	private static void multiplySale(Sale sale, float amount) {
+	private void multiplySale(Sale sale, float amount) {
 		sale.setTotalSalesValue(sale.getTotalSalesValue() * amount);
 	}
 

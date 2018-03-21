@@ -24,39 +24,39 @@ public class CacheHandlerTest {
 
 	@Before
 	public void cleanup() {
-		CacheHandler.getAllSales().clear();
-		CacheHandler.getSalesAdjustments().clear();
+		CacheHandler.getInstance().getAllSales().clear();
+		CacheHandler.getInstance().getSalesAdjustments().clear();
 
-		Assert.assertEquals(0, CacheHandler.getAllSales().size());
-		Assert.assertEquals(0, CacheHandler.getProductSalesReport().size());
-		Assert.assertEquals(0, CacheHandler.getSalesAdjustments().size());
+		Assert.assertEquals(0, CacheHandler.getInstance().getAllSales().size());
+		Assert.assertEquals(0, CacheHandler.getInstance().getProductSalesReport().size());
+		Assert.assertEquals(0, CacheHandler.getInstance().getSalesAdjustments().size());
 	}
 
 	@Test
 	public void singleSaleNotfication() {
 		// Populate cache
 		Notification notification = buildSingleSaleNotification(APPLE, APPLE_PRICE);
-		CacheHandler.updateCache(notification);
+		CacheHandler.getInstance().updateCache(notification);
 
 		notification = buildSingleSaleNotification(ORANGE, ORANGE_PRICE_16);
-		CacheHandler.updateCache(notification);
+		CacheHandler.getInstance().updateCache(notification);
 
 		notification = buildSingleSaleNotification(CHAIR, CHAIR_PRICE);
-		CacheHandler.updateCache(notification);
+		CacheHandler.getInstance().updateCache(notification);
 
 		notification = buildSingleSaleNotification(ORANGE, ORANGE_PRICE_30);
-		CacheHandler.updateCache(notification);
+		CacheHandler.getInstance().updateCache(notification);
 
 		// validate cache sizes
-		Assert.assertEquals(4, CacheHandler.getAllSales().size());
-		Assert.assertEquals(3, CacheHandler.getProductSalesReport().size());
+		Assert.assertEquals(4, CacheHandler.getInstance().getAllSales().size());
+		Assert.assertEquals(3, CacheHandler.getInstance().getProductSalesReport().size());
 
 		// validate item quantity
-		Assert.assertEquals(2, CacheHandler.getProductSalesReport().get(ORANGE).get().getQuantity());
+		Assert.assertEquals(2, CacheHandler.getInstance().getProductSalesReport().get(ORANGE).get().getQuantity());
 
 		// validate sale values
-		Assert.assertEquals(CHAIR_PRICE, CacheHandler.getProductSalesReport().get(CHAIR).get().getTotalSalesValue(), 0f);
-		Assert.assertEquals(ORANGE_PRICE_16 + ORANGE_PRICE_30, CacheHandler.getProductSalesReport().get(ORANGE).get().getTotalSalesValue(), 0f);
+		Assert.assertEquals(CHAIR_PRICE, CacheHandler.getInstance().getProductSalesReport().get(CHAIR).get().getTotalSalesValue(), 0f);
+		Assert.assertEquals(ORANGE_PRICE_16 + ORANGE_PRICE_30, CacheHandler.getInstance().getProductSalesReport().get(ORANGE).get().getTotalSalesValue(), 0f);
 
 	}
 
@@ -64,30 +64,30 @@ public class CacheHandlerTest {
 	public void multiSaleNotfication() {
 		// Populate cache
 		Notification notification = buildMultiSaleNotification(APPLE, APPLE_PRICE, 1);
-		CacheHandler.updateCache(notification);
+		CacheHandler.getInstance().updateCache(notification);
 
 		notification = buildMultiSaleNotification(ORANGE, ORANGE_PRICE_16, 2);
-		CacheHandler.updateCache(notification);
+		CacheHandler.getInstance().updateCache(notification);
 
 		notification = buildMultiSaleNotification(CHAIR, CHAIR_PRICE, 4);
-		CacheHandler.updateCache(notification);
+		CacheHandler.getInstance().updateCache(notification);
 
 		notification = buildMultiSaleNotification(APPLE, APPLE_PRICE, 3);
-		CacheHandler.updateCache(notification);
+		CacheHandler.getInstance().updateCache(notification);
 
 		// validate cache sizes
-		Assert.assertEquals(4, CacheHandler.getAllSales().size());
-		Assert.assertEquals(3, CacheHandler.getProductSalesReport().size());
+		Assert.assertEquals(4, CacheHandler.getInstance().getAllSales().size());
+		Assert.assertEquals(3, CacheHandler.getInstance().getProductSalesReport().size());
 
 		// validate item quantity
-		Assert.assertEquals(2, CacheHandler.getProductSalesReport().get(ORANGE).get().getQuantity());
-		Assert.assertEquals(4, CacheHandler.getProductSalesReport().get(APPLE).get().getQuantity());
-		Assert.assertEquals(4, CacheHandler.getProductSalesReport().get(CHAIR).get().getQuantity());
+		Assert.assertEquals(2, CacheHandler.getInstance().getProductSalesReport().get(ORANGE).get().getQuantity());
+		Assert.assertEquals(4, CacheHandler.getInstance().getProductSalesReport().get(APPLE).get().getQuantity());
+		Assert.assertEquals(4, CacheHandler.getInstance().getProductSalesReport().get(CHAIR).get().getQuantity());
 
 		// validate sale values
-		Assert.assertEquals(CHAIR_PRICE * 4, CacheHandler.getProductSalesReport().get(CHAIR).get().getTotalSalesValue(), 0f);
-		Assert.assertEquals(ORANGE_PRICE_16 * 2, CacheHandler.getProductSalesReport().get(ORANGE).get().getTotalSalesValue(), 0f);
-		Assert.assertEquals((APPLE_PRICE * 3) + APPLE_PRICE, CacheHandler.getProductSalesReport().get(APPLE).get().getTotalSalesValue(), 0f);
+		Assert.assertEquals(CHAIR_PRICE * 4, CacheHandler.getInstance().getProductSalesReport().get(CHAIR).get().getTotalSalesValue(), 0f);
+		Assert.assertEquals(ORANGE_PRICE_16 * 2, CacheHandler.getInstance().getProductSalesReport().get(ORANGE).get().getTotalSalesValue(), 0f);
+		Assert.assertEquals((APPLE_PRICE * 3) + APPLE_PRICE, CacheHandler.getInstance().getProductSalesReport().get(APPLE).get().getTotalSalesValue(), 0f);
 
 	}
 
@@ -96,42 +96,42 @@ public class CacheHandlerTest {
 		// Populate cache
 		// single sale
 		Notification notification = buildSingleSaleNotification(APPLE, APPLE_PRICE);
-		CacheHandler.updateCache(notification);
+		CacheHandler.getInstance().updateCache(notification);
 
 		notification = buildSingleSaleNotification(ORANGE, ORANGE_PRICE_16);
-		CacheHandler.updateCache(notification);
+		CacheHandler.getInstance().updateCache(notification);
 
 		// multisale
 		notification = buildMultiSaleNotification(CHAIR, CHAIR_PRICE, 4);
-		CacheHandler.updateCache(notification);
+		CacheHandler.getInstance().updateCache(notification);
 
 		notification = buildMultiSaleNotification(APPLE, APPLE_PRICE, 3);
-		CacheHandler.updateCache(notification);
+		CacheHandler.getInstance().updateCache(notification);
 
 		// sales adjustment
 		notification = buildSaleAdjustmentsNotification(ORANGE, OperationEnum.ADD, 2);
-		CacheHandler.updateCache(notification);
+		CacheHandler.getInstance().updateCache(notification);
 
 		notification = buildSaleAdjustmentsNotification(CHAIR, OperationEnum.MULTIPLY, 4);
-		CacheHandler.updateCache(notification);
+		CacheHandler.getInstance().updateCache(notification);
 
 		notification = buildSaleAdjustmentsNotification(APPLE, OperationEnum.SUBTRACT, 3);
-		CacheHandler.updateCache(notification);
+		CacheHandler.getInstance().updateCache(notification);
 
 		// validate cache sizes
-		Assert.assertEquals(4, CacheHandler.getAllSales().size());
-		Assert.assertEquals(3, CacheHandler.getProductSalesReport().size());
-		Assert.assertEquals(3, CacheHandler.getSalesAdjustments().size());
+		Assert.assertEquals(4, CacheHandler.getInstance().getAllSales().size());
+		Assert.assertEquals(3, CacheHandler.getInstance().getProductSalesReport().size());
+		Assert.assertEquals(3, CacheHandler.getInstance().getSalesAdjustments().size());
 
 		// validate item quantity
-		Assert.assertEquals(1, CacheHandler.getProductSalesReport().get(ORANGE).get().getQuantity());
-		Assert.assertEquals(4, CacheHandler.getProductSalesReport().get(APPLE).get().getQuantity());
-		Assert.assertEquals(4, CacheHandler.getProductSalesReport().get(CHAIR).get().getQuantity());
+		Assert.assertEquals(1, CacheHandler.getInstance().getProductSalesReport().get(ORANGE).get().getQuantity());
+		Assert.assertEquals(4, CacheHandler.getInstance().getProductSalesReport().get(APPLE).get().getQuantity());
+		Assert.assertEquals(4, CacheHandler.getInstance().getProductSalesReport().get(CHAIR).get().getQuantity());
 
 		// validate sale values
-		Assert.assertEquals(CHAIR_PRICE * 4 * 4, CacheHandler.getProductSalesReport().get(CHAIR).get().getTotalSalesValue(), 0f);
-		Assert.assertEquals(ORANGE_PRICE_16 + 2, CacheHandler.getProductSalesReport().get(ORANGE).get().getTotalSalesValue(), 0f);
-		Assert.assertEquals(APPLE_PRICE - 3 + (APPLE_PRICE * 3) - 3, CacheHandler.getProductSalesReport().get(APPLE).get().getTotalSalesValue(), 0f);
+		Assert.assertEquals(CHAIR_PRICE * 4 * 4, CacheHandler.getInstance().getProductSalesReport().get(CHAIR).get().getTotalSalesValue(), 0f);
+		Assert.assertEquals(ORANGE_PRICE_16 + 2, CacheHandler.getInstance().getProductSalesReport().get(ORANGE).get().getTotalSalesValue(), 0f);
+		Assert.assertEquals(APPLE_PRICE - 3 + (APPLE_PRICE * 3) - 3, CacheHandler.getInstance().getProductSalesReport().get(APPLE).get().getTotalSalesValue(), 0f);
 
 	}
 

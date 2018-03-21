@@ -78,7 +78,7 @@ public class NotificationHandler {
 		System.out.println("================ Sales Adjustment Report =================");
 		System.out.println("Product Type	Operation 	Amount");
 		System.out.println("==========================================================");
-		CacheHandler.getSalesAdjustments().forEach(this::printSalesAdjustments);
+		CacheHandler.getInstance().getSalesAdjustments().forEach(this::printSalesAdjustments);
 
 		System.exit(0);
 	}
@@ -88,7 +88,7 @@ public class NotificationHandler {
 		System.out.println("Product Type		Quantity	 	Total Sales");
 		System.out.println("==========================================================");
 
-		CacheHandler.getProductSalesReport().values().forEach(this::printSalesReportByProduct);
+		CacheHandler.getInstance().getProductSalesReport().values().forEach(this::printSalesReportByProduct);
 
 		System.out.println("\n\n");
 	}
@@ -121,7 +121,7 @@ public class NotificationHandler {
 		try {
 			reader = new FileReader(file);
 			Notification notification = gson.fromJson(reader, Notification.class);
-			CacheHandler.updateCache(notification);
+			CacheHandler.getInstance().updateCache(notification);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} finally {
